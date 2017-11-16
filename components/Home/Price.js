@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View , Image, ActivityIndicator, FlatList} from 'react-native';
+import { StyleSheet, Text, View , Image, ActivityIndicator, FlatList, Animated, Easing} from 'react-native';
 import {  ListItem, List , Badge} from 'react-native-elements';
 
 
@@ -8,31 +8,18 @@ export default class Price extends Component {
 	setNativeProps = (nativeProps) => {
     this._root.setNativeProps(nativeProps);
   }
-	
+
 	constructor(props) {
 		super(props);
 		this.state = {
 			isLoading: true,
 		}
-		this.arrayholder = [] ;
 	}
 
 	componentDidMount(){
-	  this.timer = setInterval( ( )=> this.getPrice(), 1000)
+		this.timer = setInterval( ( )=> this.getPrice(), 1000)
 	 }
 
-	 SearchFilterFunction(text){
-
-     const newData = this.arrayholder.filter(function(item){
-         const itemData = item.fruit_name.toUpperCase()
-         const textData = text.toUpperCase()
-         return itemData.indexOf(textData) > -1
-     })
-     this.setState({
-         dataSource: this.state.dataSource.cloneWithRows(newData),
-         text: text
-     })
- }
 
 	async getPrice(){
 
@@ -69,7 +56,7 @@ export default class Price extends Component {
 			return (
 				<View style={{ paddingTop: 20}}>
 					<ActivityIndicator  size="large"
-            color="#fff" />
+            color="#ccc" />
 				</View>
 			);
 		}
@@ -78,12 +65,18 @@ export default class Price extends Component {
 
 			<List containerStyle = {{borderTopWidth:0 ,borderBottomWidth:0 }}>
 				<FlatList
-					data={this.state.dataSource}
+					data={this.state.dataSource.sort(function(a, b) {
+					    return a.Last/a.PrevDay < b.Last/b.PrevDay;
+					})}
 					renderItem={({item}) => (
 						<ListItem
 
 							title = {(item.MarketName).replace(/BTC-|ETH-|USDT-/,"")}
-							subtitle = {Number(item.Last).toFixed(8)}
+							subtitle = {Number(item.Last).toFixed(8).toString() +
+													((item.MarketName).indexOf("BTC-")?"":" BTC") +
+													((item.MarketName).indexOf("ETH-")?"":" ETH") +
+													((item.MarketName).indexOf("USDT-")?"":" $")
+											   }
 							rightTitle = { (( Number(item.Last)/Number(item.PrevDay) - 1 ).toFixed(4)<0?"":"+") +
 							 							(( Number(item.Last)/Number(item.PrevDay) - 1 )*100).toFixed(2).toString() +"%" }
 							rightTitleStyle={{ fontSize: 15, fontWeight:'bold', color: (( Number(item.Last)/Number(item.PrevDay) - 1 ).toFixed(4)<0?'red':'green') }}

@@ -1,35 +1,33 @@
 import React, { Component } from 'react';
 import Price from './Price';
-import {  SearchBar, Header } from 'react-native-elements';
+import Coin from './Coin';
 
 import { StyleSheet, Text, View , Image, ScrollView } from 'react-native';
+import {  SearchBar, Header } from 'react-native-elements';
 
 export default class Home extends Component {
+
 	render(){
 
 		return(
 
 			<View style={styles.container}>
 				<Header  style={styles.header}
+				outerContainerStyles={{ backgroundColor: '#3D6DCC' }}
 					statusBarProps={{ barStyle: 'light-content' }}
-	  			centerComponent={{ text: 'Crypthocoin Price List', style: { color: '#fff', fontSize: 20, marginTop:100 } }}
-
-				/>
+	  			centerComponent={{ text: 'Coin Alert', style: { color: '#fff', fontSize: 20, marginTop:100 } }}
+			/>
 				<View style={styles.price}>
 					<ScrollView>
 					<SearchBar style={styles.searchBar}
 						lightTheme
-						containerStyle={{flex:1, height:undefined}}
-						onChangeText={(text) => this.SearchFilterFunction(text)}
 						placeholder='Search' />
+						<Coin/>
 						<Price />
 					</ScrollView>
 				</View>
 
 			</View>
-
-
-
 		);
 
 
@@ -46,12 +44,6 @@ const styles = StyleSheet.create({
   },
 	searchBar:{
 		color: '#000',
-	},
-	header:{
-		flex:1,
-
-		fontSize: 20,
-
 	},
 	logoContainer:{
 		flex:1,
