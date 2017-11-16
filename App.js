@@ -1,12 +1,9 @@
 import React from 'react';
 import Home from './components/Home/Home';
 
-import { StyleSheet, Text, View , Image, StatusBar } from 'react-native';
+import { StyleSheet, Text, View , Image } from 'react-native';
 
 export default class App extends React.Component {
-	componentDidMount() {
-       StatusBar.setHidden(true);
-    }
   render() {
     return (
     	<Home />

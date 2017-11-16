@@ -1,18 +1,38 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View , Image, ActivityIndicator, ListView, ListItem, List, FlatList} from 'react-native';
+import { StyleSheet, Text, View , Image, ActivityIndicator, FlatList} from 'react-native';
+import {  ListItem, List , Badge} from 'react-native-elements';
+
+
 
 export default class Price extends Component {
+	setNativeProps = (nativeProps) => {
+    this._root.setNativeProps(nativeProps);
+  }
+	
 	constructor(props) {
 		super(props);
 		this.state = {
 			isLoading: true,
-			tableHeader:[]
 		}
+		this.arrayholder = [] ;
 	}
 
 	componentDidMount(){
 	  this.timer = setInterval( ( )=> this.getPrice(), 1000)
 	 }
+
+	 SearchFilterFunction(text){
+
+     const newData = this.arrayholder.filter(function(item){
+         const itemData = item.fruit_name.toUpperCase()
+         const textData = text.toUpperCase()
+         return itemData.indexOf(textData) > -1
+     })
+     this.setState({
+         dataSource: this.state.dataSource.cloneWithRows(newData),
+         text: text
+     })
+ }
 
 	async getPrice(){
 
@@ -55,14 +75,26 @@ export default class Price extends Component {
 		}
 
 		return(
-			<View style={{ paddingTop: 20, flex: 1}}>
+
+			<List containerStyle = {{borderTopWidth:0 ,borderBottomWidth:0 }}>
 				<FlatList
 					data={this.state.dataSource}
-					renderItem={({item}) => <Text style={styles.name} > {(item.MarketName).replace(/BTC-|ETH-|USDT-/,"")}: {Number(item.Last).toFixed(8)} BTC </Text>}
-					ItemSeparatorComponent={this.renderSeparator}
-				>
-				</FlatList>
-			</View>
+					renderItem={({item}) => (
+						<ListItem
+
+							title = {(item.MarketName).replace(/BTC-|ETH-|USDT-/,"")}
+							subtitle = {Number(item.Last).toFixed(8)}
+							rightTitle = { (( Number(item.Last)/Number(item.PrevDay) - 1 ).toFixed(4)<0?"":"+") +
+							 							(( Number(item.Last)/Number(item.PrevDay) - 1 )*100).toFixed(2).toString() +"%" }
+							rightTitleStyle={{ fontSize: 15, fontWeight:'bold', color: (( Number(item.Last)/Number(item.PrevDay) - 1 ).toFixed(4)<0?'red':'green') }}
+
+
+						/>
+					)}
+					keyExtractor = {item => item.MarketName }
+				/>
+			</List>
+
 
 		);
 
